@@ -29,41 +29,41 @@ statements: statement (SMCOLN statement)*;
 /***** Basic arithmetic expressions with variables *****/
 
 // For 'real' (double) variables
-arith_expr returns[double d]:
-       '(' e=arith_expr ')' { $d = $e.d; }
-       | el=arith_expr '*' er=arith_expr { $d = $el.d * $er.d; }
-       | el=arith_expr '/' er=arith_expr { $d = $el.d / $er.d; }
-       | el=arith_expr '+' er=arith_expr { $d = $el.d + $er.d; }
-       | el=arith_expr '-' er=arith_expr { $d = $el.d - $er.d; }
+arith_expr:
+       '(' e=arith_expr ')'
+       | el=arith_expr '*' er=arith_expr
+       | el=arith_expr '/' er=arith_expr
+       | el=arith_expr '+' er=arith_expr
+       | el=arith_expr '-' er=arith_expr
        // Base
-       | REAL { $d = Double.valueOf($REAL.text); }
+       | REAL
        // Variable names
-       | NAME { $d = arithVars.get($NAME.text); }
+       | NAME
        // Special expressions
-       | spcl_math_expr {$d = $spcl_math_expr.d; }
+       | spcl_math_expr
        ;
 
 /***** Boolean/logical Expressions *****/
 
-bool_expr returns [boolean b]:
-    el=bool_expr AND er=bool_expr { $b = ((($el.b != false ? true : false) && ($er.b != false ? true : false)) ? true : false); }
-    | el=bool_expr OR er=bool_expr { $b = ((($el.b != false ? true : false) || ($er.b != false ? true : false)) ? true : false); }
-    | NOT el=bool_expr { $b = (!($el.b != false ? true : false) ? true : false); }
+bool_expr:
+    el=bool_expr AND er=bool_expr
+    | el=bool_expr OR er=bool_expr
+    | NOT el=bool_expr
     // Base
-    | BOOL { $b = Boolean.parseBoolean($BOOL.text); }
+    | BOOL
     // Variable names
-    | NAME { $b = boolVars.get($NAME.text); }
+    | NAME
     ;
 
 /***** Decision Making (if-then-else, case) *****/
 
 if_block: IF condition THEN statement (ELSE IF bool_expr THEN statement)* (ELSE statement)?;
 
-condition returns [boolean b]:
-    el=bool_expr '=' er=bool_expr { $b = (($el.b == $er.b) ? true : false); }
-    | el=bool_expr NOT '=' er=bool_expr { $b = (($el.b == $er.b) ? true : false); }
-    | BOOL { $b = Boolean.parseBoolean($BOOL.text);}
-    | NAME { $b = Boolean.parseBoolean($NAME.text); }
+condition:
+    el=bool_expr '=' er=bool_expr
+    | el=bool_expr NOT '=' er=bool_expr
+    | BOOL
+    | NAME
     ;
 
 // TODO: Case
@@ -73,58 +73,21 @@ case_statement: CASE condition OF statement_list  SMCOLN  (SMCOLN ELSE statement
 /***** Special Expressions: Readln, Writeln, sqrt, sin, cos, ln, exp *****/
 
 // Readln, Writeln
-readln: READLN '('NAME')' SMCOLN{
-    if( scanner.hasNextDouble()){
-        double dou = scanner.nextDouble();
-        arithVars.put($NAME.text, dou);
-    }
-    else if (scanner.hasNextBoolean()){
-        boolean bo = scanner.nextBoolean();
-        boolVars.put($NAME.text, bo);
-    }
-    else{
-        System.out.println("NOT VALID");
-    }
-};
+readln: READLN '('NAME')' SMCOLN;
 
-writeln: WRITELN '('spcl_math_expr')' SMCOLN {
-    if (arithVars.containsKey($spcl_math_expr.text.substring($spcl_math_expr.text.length()-2,$spcl_math_expr.text.length()-1))){
-        //System.out.println($spcl_math_expr.text.substring(0,4));
-        if ( $spcl_math_expr.text.substring(0,4).equals("sqrt") )
-            System.out.println($spcl_math_expr.d);
-        else if( $spcl_math_expr.text.substring(0,3).equals("sin") )
-            System.out.println($spcl_math_expr.d);
-        else if( $spcl_math_expr.text.substring(0,3).equals("cos") )
-            System.out.println($spcl_math_expr.d);
-        else if( $spcl_math_expr.text.substring(0,2).equals("ln") )
-            System.out.println($spcl_math_expr.d);
-        else if( $spcl_math_expr.text.substring(0,3).equals("exp"))
-            System.out.println($spcl_math_expr.d);
-    }
-} | WRITELN '('NAME')' SMCOLN {
-      if (arithVars.containsKey($NAME.text)){
-          System.out.println(arithVars.get($NAME.text));
-      }
-      else if (boolVars.containsKey($NAME.text)){
-          System.out.println(boolVars.get($NAME.text));
-      }
-      else{
-          System.out.println($NAME.text);
-          System.out.println("DODDO");
-      }
-} | WRITELN '('REAL')' SMCOLN {
-       System.out.println($REAL.text);
-} | WRITELN '('BOOL')' SMCOLN {
-       System.out.println($BOOL.text);
-};
+writeln: WRITELN '('spcl_math_expr')' SMCOLN
+         | WRITELN '('NAME')' SMCOLN
+         | WRITELN '('REAL')' SMCOLN
+         | WRITELN '('BOOL')' SMCOLN
+         ;
 
 // For sqrt, sin, cos, ln, and exp
-spcl_math_expr returns [double d]:
-    expr=SQRT '(' contents=arith_expr ')' { $d = Math.sqrt($contents.d); }
-    | expr=SIN '(' contents=arith_expr ')' { $d = Math.sin($contents.d); }
-    | expr=COS '(' contents=arith_expr ')' { $d = Math.cos($contents.d); }
-    | expr=LN '(' contents=arith_expr ')' { $d = Math.log($contents.d); }
-    | expr=EXP '(' contents=arith_expr ')' { $d = Math.exp($contents.d); }
+spcl_math_expr:
+    expr=SQRT '(' contents=arith_expr ')'
+    | expr=SIN '(' contents=arith_expr ')'
+    | expr=COS '(' contents=arith_expr ')'
+    | expr=LN '(' contents=arith_expr ')'
+    | expr=EXP '(' contents=arith_expr ')'
     ;
 
 
