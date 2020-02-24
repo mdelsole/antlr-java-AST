@@ -20,8 +20,8 @@ public class Main {
         pascalParser parser = new pascalParser(new CommonTokenStream(lexer));
         // Create a parse tree. Program() is our entry point
         ParseTree tree = parser.program();
-        // Our visitor (does the actions as tree is traversed)
-        PascalVisitor visitor = new PascalVisitor();
+        // Our custom visitor (does the actions as tree is traversed)
+        ASTVisitor visitor = new ASTVisitor();
         // We need to implement this:
         // visitor.visit(tree);
 
