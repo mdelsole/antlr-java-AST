@@ -1,4 +1,4 @@
-grammar ASTGrammar;
+grammar pascal;
 
 
 /*************** Parser rules (putting input into tree) ***************/
