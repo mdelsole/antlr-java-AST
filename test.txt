@@ -1,0 +1,10 @@
+program mytests;
+VAR
+    i, j : boolean = true;
+    k : real = 2.5;
+
+BEGIN
+    writeln(Yo);
+    writeln(i);
+    writeln(k);
+END;

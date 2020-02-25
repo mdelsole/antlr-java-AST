@@ -18,12 +18,12 @@ public class Main {
         pascalLexer lexer = new pascalLexer(new ANTLRFileStream(args[0]));
         // Set the lexed file as input to our parser
         pascalParser parser = new pascalParser(new CommonTokenStream(lexer));
-        // Create a parse tree. Program() is our entry point
-        ParseTree tree = parser.program();
+        // Create a parse tree. Start() is our entry point
+        ParseTree tree = parser.start();
         // Our custom visitor (does the actions as tree is traversed)
         ASTVisitor visitor = new ASTVisitor();
         // We need to implement this:
-        // visitor.visit(tree);
+        visitor.visit(tree);
 
     }
 }

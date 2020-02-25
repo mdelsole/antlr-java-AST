@@ -31,10 +31,14 @@ program: PROGRAM NAME SMCOLN (variable)? program_block;
 /***** Variable declarations *****/
 
 variable: VAR varDeclaration+;
-varDeclaration: vNameList COLON VTYPE '=' BOOL SMCOLN
-    | vNameList COLON VTYPE '=' REAL SMCOLN
-    | vNameList COLON VTYPE '=' arith_expr SMCOLN
-    | vNameList COLON VTYPE '=' bool_expr SMCOLN;
+varDeclaration: vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' varType SMCOLN;
+varType: (BOOL | REAL | arith_expr | bool_expr);
+
+/*
+varDeclaration: vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' BOOL SMCOLN
+    | vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' REAL SMCOLN
+    | vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' arith_expr SMCOLN
+    | vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' bool_expr SMCOLN;*/
 
 vNameList: NAME (COMMA NAME)*;
 
@@ -120,11 +124,11 @@ Ordering rule is: Most specific to least specific. DO NOT BREAK THIS RULE! Very 
 
 PROGRAM: 'program';
 VAR: 'VAR';
-VTYPE: 'boolean' | 'real';
 VASSIGN: ':=';
 BEGIN: 'BEGIN';
 END: 'END';
-
+BOOLEANTYPE: 'boolean';
+REALTYPE: 'real';
 
 READLN: 'readln';
 WRITELN: 'writeln';
