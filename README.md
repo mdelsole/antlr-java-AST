@@ -32,3 +32,25 @@ Let's take the branch ```varDeclaration``` for example. As our visitor goes thro
 What is meant by context? It means all of the parse elements of the current branch. It defines what we can access. In the case of the ```varDeclaration``` branch, this could be ```vNameList()```, ```BOOLEANTYPE()```, or even ```COLON()```. 
 
 By accessing the elements of our current *context*, we can perform actions on them. For example, I could do ```ctx.vNameList().getText()``` to get the text of the variable names.
+
+## To-Do:
+
+- [x] Implement visitor
+- [ ] Program name
+- [ ] Variable declarations
+- [ ] Main program block
+- [ ] Arithmetic expressions (with variables)
+- [ ] Boolean expressions (with variables)
+- [ ] If-then-else statements
+- [ ] Case statements
+- [ ] Special math expressions (sqrt, sin, cos, ln, exp)
+- [ ] Readln
+- [ ] Writeln
+- [ ] Variable assignment
+- [ ] Static scoping
+- [ ] Global variables vs. local variables
+- [ ] Scope chaining and position tracking
+- [ ] While loops
+- [ ] For loops
+- [ ] Break/continue in loops
+- [ ] User defined functions
