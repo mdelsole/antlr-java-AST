@@ -43,7 +43,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [ ] Boolean expressions (with variables)
 - [ ] If-then-else statements
 - [ ] Case statements
-- [ ] Special math expressions (sqrt, sin, cos, ln, exp)
+- [x] Special math expressions (sqrt, sin, cos, ln, exp)
 - [ ] Readln
 - [ ] Writeln
 - [ ] Variable assignment
