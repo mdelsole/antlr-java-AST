@@ -36,13 +36,13 @@ By accessing the elements of our current *context*, we can perform actions on th
 ## To-Do:
 
 - [x] Implement visitor
-- [ ] Program name
+- [x] Program name
 - [x] Variable declarations
 - [ ] Main program block
 - [x] Arithmetic expressions (with variables)
 - [ ] Negative numbers
 - [x] Boolean expressions (with variables)
-- [ ] If-then-else statements
+- [x] If-then-else statements
 - [ ] Case statements
 - [x] Special math expressions (sqrt, sin, cos, ln, exp)
 - [ ] Readln
