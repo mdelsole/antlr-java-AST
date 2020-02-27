@@ -47,7 +47,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [x] Special math expressions (sqrt, sin, cos, ln, exp)
 - [ ] Readln
 - [ ] Writeln
-- [ ] Variable assignment
+- [x] Variable assignment
 - [ ] Static scoping
 - [ ] Global variables vs. local variables
 - [ ] Scope chaining and position tracking
