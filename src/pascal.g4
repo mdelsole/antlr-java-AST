@@ -28,7 +28,7 @@ start: program EOF;
 
 program: PROGRAM NAME SMCOLN (variableBlock)? programBlock;
 
-/***** Variable declarations *****/
+/***** Variables *****/
 
 variableBlock: VAR varDec+;
 varDec:
@@ -39,11 +39,13 @@ varDec:
 varValue: (mathExpr | logicExpr);
 varNameList: NAME (COMMA NAME)*;
 
+varAssignment: varNameList ':=' varValue SMCOLN;
+
 /***** Main program block *****/
 
 programBlock: BEGIN statementList END SMCOLN;
 statementList: statement | statement SMCOLN statementList;
-statement: (programBlock | ifBlock | caseStatement | writeln | readln)+;
+statement: (programBlock | ifBlock | caseStatement | writeln | readln | varAssignment)+;
 statements: statement (SMCOLN statement)*;
 
 /***** Basic arithmetic expressions with variables *****/
@@ -78,7 +80,10 @@ logicElement:
 
 /***** Decision Making (if-then-else, case) *****/
 
-ifBlock: IF logicExpr THEN statement (ELSE IF logicExpr THEN statement)* (ELSE statement)?;
+ifBlock: IF conditional (ELSE IF conditional)* (ELSE statement)?;
+
+conditional:
+    logicExpr THEN statement;
 
 // TODO: Case
 

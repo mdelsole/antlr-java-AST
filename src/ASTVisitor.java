@@ -111,6 +111,41 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return value;
     }
 
+    // Variable assignment using ':=' (mostly same code as above)
+    @Override
+    public Data visitVarAssignment(pascalParser.VarAssignmentContext ctx) {
+        // Get the variable name list
+        String varName = ctx.varNameList().getText();
+
+        // Handle case where multiple variable names are passed in
+        String[] vNames;
+        if (varName.contains(",")) {
+            vNames = parseString(varName);
+        }
+        else{
+            vNames = null;
+        }
+
+        // Retrieve the value to set these variable(s) equal to
+        Data value = this.visit(ctx.varValue());
+
+        // Place the variable name and its data value into this scope's variables (i.e. localVars)
+        if (vNames == null) {
+            // peek() gets us the top element, i.e. current scope
+            localVars.peek().put(varName, value);
+            System.out.println("Assigned Name: " + varName + ", Value: " + value);
+        }
+        else{
+            for (int i = 0; i < vNames.length; i++){
+                localVars.peek().put(vNames[i], value);
+                System.out.println("Assigned Name: " + vNames[i] + ", Value: " + value);
+            }
+        }
+
+        System.out.println("Local initialized variables: " + localVars.peek());
+
+        return value;
+    }
 
     /*************** Arithmetic expressions ***************/
 
@@ -296,7 +331,9 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     @Override
     public Data visitIfBlock(pascalParser.IfBlockContext ctx) {
-        return super.visitIfBlock(ctx);
+
+
+        return null;
     }
 
     /*************** Utility methods ***************/

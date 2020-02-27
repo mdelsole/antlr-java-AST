@@ -7,7 +7,5 @@ VAR
     z : real = k+cos(0.0/1.0);
 
 BEGIN
-    writeln(Yo);
-    writeln(i);
-    writeln(k);
+    k := 9;
 END;

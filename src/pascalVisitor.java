@@ -60,6 +60,12 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarNameList(pascalParser.VarNameListContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link pascalParser#varAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarAssignment(pascalParser.VarAssignmentContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link pascalParser#programBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -180,6 +186,12 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIfBlock(pascalParser.IfBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#conditional}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConditional(pascalParser.ConditionalContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link pascalParser#caseStatement}.
 	 * @param ctx the parse tree
