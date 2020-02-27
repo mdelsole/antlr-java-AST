@@ -44,9 +44,9 @@ varAssignment: varNameList ':=' varValue SMCOLN;
 /***** Main program block *****/
 
 programBlock: BEGIN statementList END SMCOLN;
-statementList: statement | statement SMCOLN statementList;
-statement: (programBlock | ifBlock | caseStatement | writeln | readln | varAssignment)+;
-statements: statement (SMCOLN statement)*;
+statementList: statement+;
+// TODO: Case
+statement: (programBlock | ifBlock | writeln | readln | whileLoop | varAssignment);
 
 /***** Basic arithmetic expressions with variables *****/
 
@@ -78,7 +78,7 @@ logicElement:
    | NAME                                                                       #boolVarElement;
 
 
-/***** Decision Making (if-then-else, case) *****/
+/***** If-then-else, case statements *****/
 
 ifBlock: IF conditional (ELSE IF conditional)* (ELSE statement)?;
 
@@ -87,22 +87,23 @@ conditional:
 
 // TODO: Case
 
-caseStatement: CASE logicExpr OF statementList  SMCOLN  (SMCOLN ELSE statements)? END;
-
 /***** Special Expressions: Readln, Writeln, sqrt, sin, cos, ln, exp *****/
 
 // Readln, Writeln
 readln: READLN '('NAME')' SMCOLN;
 
 writeln:
-         WRITELN '('NAME')' SMCOLN
-         | WRITELN '('REAL')' SMCOLN
-         | WRITELN '('BOOL')' SMCOLN
-         ;
+     WRITELN '(' (writeContent ','?)+ ')' SMCOLN
+     ;
 
+writeContent:
+    varValue                                                                    #writeVar
+    | TEXT                                                                      #writeText
+    ;
 
-//whileLoop: WHILE '('? condition ')' DO loopBlock;
+/***** Loops: While and For *****/
 
+whileLoop: WHILE logicExpr DO statementList;
 
 /*************** Lexer rules (breaking up the input). Must be uppercase names! ***************/
 
@@ -121,6 +122,10 @@ REALTYPE: 'real';
 
 READLN: 'readln';
 WRITELN: 'writeln';
+
+WHILE: 'while';
+DO: 'do';
+FOR: 'for';
 
 
 COMMENT1: '(*' .*? '*)' -> skip;
@@ -160,11 +165,11 @@ REAL: [0-9]+('.'[0-9]+)?;
 INT: [0-9]+;
 
 NAME: [a-zA-Z][a-zA-Z0-9_]*;
+// Apparently in ANTLR, ~['] has to be done instead of [^'\'']
+TEXT: '\''~[']*'\'';
 
 // Could mess things up?
 SPACE : [ \n\r\t] -> skip;
 SMCOLN: ';';
 COMMA: ',';
 COLON: ':';
-
-TEXT: .;

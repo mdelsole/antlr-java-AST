@@ -84,12 +84,6 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(pascalParser.StatementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#statements}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatements(pascalParser.StatementsContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code arithSpclExpr}
 	 * labeled alternative in {@link pascalParser#mathExpr}.
 	 * @param ctx the parse tree
@@ -193,12 +187,6 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConditional(pascalParser.ConditionalContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#caseStatement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCaseStatement(pascalParser.CaseStatementContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link pascalParser#readln}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -210,4 +198,24 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWriteln(pascalParser.WritelnContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code writeVar}
+	 * labeled alternative in {@link pascalParser#writeContent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWriteVar(pascalParser.WriteVarContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code writeText}
+	 * labeled alternative in {@link pascalParser#writeContent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWriteText(pascalParser.WriteTextContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#whileLoop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileLoop(pascalParser.WhileLoopContext ctx);
 }

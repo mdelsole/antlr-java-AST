@@ -25,6 +25,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     public Data visitStart(pascalParser.StartContext ctx) {
         // Top level scope holds the global variables
         localVars.push(globalVars);
+        System.out.println("Running " + ctx.program().NAME());
         return visitChildren(ctx);
     }
 
@@ -60,16 +61,16 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         if (vNames == null) {
             // peek() gets us the top element, i.e. current scope
             localVars.peek().put(varName, value);
-            System.out.println("Declared Name: " + varName + ", Value: " + value);
+            //System.out.println("Declared Name: " + varName + ", Value: " + value);
         }
         else{
             for (int i = 0; i < vNames.length; i++){
                 localVars.peek().put(vNames[i], value);
-                System.out.println("Declared Name: " + vNames[i] + ", Value: " + value);
+                //System.out.println("Declared Name: " + vNames[i] + ", Value: " + value);
             }
         }
 
-        System.out.println("Local declared variables: " + localVars.peek());
+        //System.out.println("Local declared variables: " + localVars.peek());
 
 
         return value;
@@ -97,16 +98,16 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         if (vNames == null) {
             // peek() gets us the top element, i.e. current scope
             localVars.peek().put(varName, value);
-            System.out.println("Initialized Name: " + varName + ", Value: " + value);
+            //System.out.println("Initialized Name: " + varName + ", Value: " + value);
         }
         else{
             for (int i = 0; i < vNames.length; i++){
                 localVars.peek().put(vNames[i], value);
-                System.out.println("Initialized Name: " + vNames[i] + ", Value: " + value);
+                //System.out.println("Initialized Name: " + vNames[i] + ", Value: " + value);
             }
         }
 
-        System.out.println("Local initialized variables: " + localVars.peek());
+        //System.out.println("Local initialized variables: " + localVars.peek());
 
         return value;
     }
@@ -133,16 +134,16 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         if (vNames == null) {
             // peek() gets us the top element, i.e. current scope
             localVars.peek().put(varName, value);
-            System.out.println("Assigned Name: " + varName + ", Value: " + value);
+            //System.out.println("Assigned Name: " + varName + ", Value: " + value);
         }
         else{
             for (int i = 0; i < vNames.length; i++){
                 localVars.peek().put(vNames[i], value);
-                System.out.println("Assigned Name: " + vNames[i] + ", Value: " + value);
+                //System.out.println("Assigned Name: " + vNames[i] + ", Value: " + value);
             }
         }
 
-        System.out.println("Local initialized variables: " + localVars.peek());
+        //System.out.println("Local initialized variables: " + localVars.peek());
 
         return value;
     }
@@ -182,7 +183,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         String expression = ctx.expr.getText();
         Data contents = this.visit(ctx.contents);
         Data result = null;
-        System.out.println("Contents: " + contents);
+        //System.out.println("Contents: " + contents);
 
         if (expression.equals("sqrt")){
             result = new Data(Math.sqrt(contents.toDouble()));
@@ -218,7 +219,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
         // Retrieve the value using the variable name as the key
         Data value = localVars.peek().get(varName);
-        System.out.println("Retrieved value: " + value);
+        //System.out.println("Retrieved value: " + value);
 
         return value;
     }
@@ -280,10 +281,10 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
             result = new Data(!(leftElement.toDouble().equals(rightElement.toDouble())));
         }
         else if (ctx.op.getType() == pascalParser.GRT){
-            result = new Data(leftElement.toDouble() >= (rightElement.toDouble()));
+            result = new Data(leftElement.toDouble() > (rightElement.toDouble()));
         }
         else if (ctx.op.getType() == pascalParser.GRTEQ){
-            result = new Data(leftElement.toDouble() > (rightElement.toDouble()));
+            result = new Data(leftElement.toDouble() >= (rightElement.toDouble()));
         }
         else if (ctx.op.getType() == pascalParser.LST){
             result = new Data(leftElement.toDouble() < (rightElement.toDouble()));
@@ -311,7 +312,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
         // Retrieve the value using the variable name as the key
         Data value = localVars.peek().get(varName);
-        System.out.println("Retrieved value: " + value);
+        //System.out.println("Retrieved value: " + value);
 
         return value;
     }
@@ -326,7 +327,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     }
 
 
-    /*************** Decision Making (if-then-else, case) ***************/
+    /*************** If-then-else, case statements ***************/
 
 
     @Override
@@ -347,6 +348,65 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         if (!complete){
             this.visit(ctx.statement());
         }
+
+        return null;
+    }
+
+    // TODO: Case
+
+
+
+    /*************** Writeln, readln ***************/
+
+
+    @Override
+    public Data visitWriteln(pascalParser.WritelnContext ctx) {
+        StringBuilder result = new StringBuilder();
+        // Loop through the if statement, execute it if the condition evaluates to true
+        for (int i = 0; i < ctx.writeContent().size(); i++) {
+            result.append(this.visit(ctx.writeContent(i)).toString());
+        }
+        System.out.println(result);
+        return null;
+    }
+
+
+    @Override
+    public Data visitWriteVar(pascalParser.WriteVarContext ctx) {
+
+        return this.visit(ctx.varValue());
+    }
+
+    @Override
+    public Data visitWriteText(pascalParser.WriteTextContext ctx) {
+        String text = ctx.TEXT().getText();
+        // Strip it of the quotes
+        text = text.substring(1, text.length()-1);
+        return new Data(text);
+    }
+
+    /*************** Loops: While and For ***************/
+
+
+    @Override
+    public Data visitWhileLoop(pascalParser.WhileLoopContext ctx) {
+
+        // Make a new scope for within the while loop
+        HashMap<String, Data> newScope = new HashMap<String, Data>();
+        // Make sure the new scope has access to the global variables too by using putAll()
+        newScope.putAll(localVars.peek());
+        localVars.push(newScope);
+
+        Boolean condition = this.visit(ctx.logicExpr()).toBoolean();
+        while (condition){
+            this.visit(ctx.statementList());
+            // Re-evaluate the condition to determine if we continue
+            condition = this.visit(ctx.logicExpr()).toBoolean();
+        }
+
+        // Once we're done with our loop, return to the original scope
+        HashMap<String, Data> currentScope = localVars.pop();
+        // TODO: Do scope variables transfer over?
 
         return null;
     }
