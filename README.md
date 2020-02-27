@@ -37,7 +37,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 
 - [x] Implement visitor
 - [ ] Program name
-- [ ] Variable declarations
+- [x] Variable declarations
 - [ ] Main program block
 - [ ] Arithmetic expressions (with variables)
 - [ ] Boolean expressions (with variables)
