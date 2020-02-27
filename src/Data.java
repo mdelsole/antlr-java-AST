@@ -10,8 +10,11 @@ public class Data {
     }
 
     public Double toDouble(){
-        // TODO: Double.valueOf(data) doesn't work?
         return (Double) data;
+    }
+
+    public Boolean toBoolean(){
+        return (Boolean) data;
     }
 
     @Override

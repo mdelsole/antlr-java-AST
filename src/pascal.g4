@@ -50,28 +50,28 @@ statements: statement (SMCOLN statement)*;
 
 mathExpr:
    el=mathExpr op=(MULT | DIV | PLUS | MINUS) er=mathExpr                       #arithExpr
-   | expr=(SQRT|SIN|COS|LN|EXP) '(' contents=mathExpr ')'                       #spclExpr
+   | expr=(SQRT|SIN|COS|LN|EXP) '(' contents=mathExpr ')'                       #arithSpclExpr
    // Base
-   | mathElement                                                                #mathElementExpr
+   | mathElement                                                                #arithElement
    ;
 
 mathElement:
    '(' mathExpr ')'                                                             #arithExprElement
-   | REAL                                                                       #realElement
-   | NAME                                                                       #mathVarElement;
+   | REAL                                                                       #arithValueElement
+   | NAME                                                                       #arithVarElement;
 
 /***** Boolean/logical Expressions *****/
 
 logicExpr:
     el=logicExpr op=(AND | OR) er=logicExpr                                     #boolExpr
-    | NOT el=logicExpr                                                          #notExpr
+    | NOT el=logicExpr                                                          #boolNotExpr
     // Base
-    | logicElement                                                              #logicElementExpr
+    | logicElement                                                              #boolElement
     ;
 
 logicElement:
    '(' logicExpr ')'                                                            #boolExprElement
-   | BOOL                                                                       #boolElement
+   | BOOL                                                                       #boolValueElement
    | NAME                                                                       #boolVarElement;
 
 
@@ -150,7 +150,7 @@ THEN : 'then';
 CASE : 'case';
 OF : 'of';
 
-REAL: [-]?[0-9]+('.'[0-9]+)?;
+REAL: [0-9]+('.'[0-9]+)?;
 INT: [0-9]+;
 
 NAME: [a-zA-Z][a-zA-Z0-9_]*;

@@ -2,7 +2,9 @@ program mytests;
 VAR
     i : boolean;
     j, m : boolean = true;
-    k : real = 2.5*4;
+    y : boolean = j and not (true or false);
+    k : real = 8;
+    z : real = k+cos(0.0/1.0);
 
 BEGIN
     writeln(Yo);

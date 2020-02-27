@@ -12,6 +12,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     /*************** Our old @members, modified to utilize generic types ***************/
 
 
+    // Global vars will be the variables at the lowest scope level
     HashMap<String, Data> globalVars = new HashMap<String, Data>();
     // Our "scope"; each level of the stack will store the local variables for that "scope"
     Stack<HashMap<String, Data>> localVars = new Stack<HashMap<String, Data>>();
@@ -110,15 +111,12 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     /***** Math expressions *****/
 
-    // Handles *, /, +, -
+    // Handle *, /, +, -
     @Override
     public Data visitArithExpr(pascalParser.ArithExprContext ctx) {
         Data leftElement = this.visit(ctx.el);
         Data rightElement = this.visit(ctx.er);
         Data result = null;
-        System.out.println("le: " + leftElement);
-        System.out.println("re: " + rightElement);
-
 
         if (ctx.op.getType() == pascalParser.MULT){
             result = new Data(leftElement.toDouble() * rightElement.toDouble());
@@ -133,30 +131,62 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
             result = new Data(leftElement.toDouble() - rightElement.toDouble());
         }
         else{
-            System.out.println("Unknown operation");
+            System.out.println("Unknown arithmetic operation");
         }
-        System.out.println("Result: " + result);
 
         return result;
     }
 
-    // Handles sqrt, sin, cos, ln, exp
+    // Handle sqrt, sin, cos, ln, exp
     @Override
-    public Data visitSpclExpr(pascalParser.SpclExprContext ctx) {
+    public Data visitArithSpclExpr(pascalParser.ArithSpclExprContext ctx) {
         String expression = ctx.expr.getText();
         Data contents = this.visit(ctx.contents);
         Data result = null;
         System.out.println("Contents: " + contents);
 
-        if (expression.equals("sin")){
-            //result = new Data(Math.sin(contents.toDouble()));
+        if (expression.equals("sqrt")){
+            result = new Data(Math.sqrt(contents.toDouble()));
+        }
+        else if (expression.equals("sin")){
+            result = new Data(Math.sin(contents.toDouble()));
+        }
+        else if (expression.equals("cos")){
+            result = new Data(Math.cos(contents.toDouble()));
+        }
+        else if (expression.equals("ln")){
+            result = new Data(Math.log(contents.toDouble()));
+        }
+        else if (expression.equals("exp")){
+            result = new Data(Math.exp(contents.toDouble()));
+        }
+        else{
+            System.out.println("Unknown special operation");
         }
         return result;
     }
 
-    // Base case, returning double value itself
+    // Handle parentheses
     @Override
-    public Data visitRealElement(pascalParser.RealElementContext ctx) {
+    public Data visitArithExprElement(pascalParser.ArithExprElementContext ctx) {
+        return this.visit(ctx.mathExpr());
+    }
+
+    // Handle variables
+    @Override
+    public Data visitArithVarElement(pascalParser.ArithVarElementContext ctx) {
+        String varName = ctx.getText();
+
+        // Retrieve the value using the variable name as the key
+        Data value = localVars.peek().get(varName);
+        System.out.println("Retrieved value: " + value);
+
+        return value;
+    }
+
+    // Base case, returning the double value itself
+    @Override
+    public Data visitArithValueElement(pascalParser.ArithValueElementContext ctx) {
         Double elementValue = Double.valueOf(ctx.getText());
         Data element = new Data(elementValue);
 
@@ -165,9 +195,55 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     /***** Boolean expressions *****/
 
-    // Base case, returning boolean value itself
+    // Handle 'and', 'or'
     @Override
-    public Data visitBoolElement(pascalParser.BoolElementContext ctx) {
+    public Data visitBoolExpr(pascalParser.BoolExprContext ctx) {
+        Data leftElement = this.visit(ctx.el);
+        Data rightElement = this.visit(ctx.er);
+
+        Data result = null;
+
+        if (ctx.op.getType() == pascalParser.AND){
+            result = new Data(leftElement.toBoolean() && rightElement.toBoolean());
+        }
+        else if (ctx.op.getType() == pascalParser.OR){
+            result = new Data(leftElement.toBoolean() || rightElement.toBoolean());
+        }
+        else{
+            System.out.println("Unknown operation");
+        }
+
+        return result;
+    }
+
+    // Handle 'not'
+    @Override
+    public Data visitBoolNotExpr(pascalParser.BoolNotExprContext ctx) {
+        Data element = this.visit(ctx.el);
+        Data result = new Data(!element.toBoolean());
+        return result;
+    }
+
+    // Handle parentheses
+    @Override
+    public Data visitBoolExprElement(pascalParser.BoolExprElementContext ctx) {
+        return this.visit(ctx.logicExpr());
+    }
+
+    @Override
+    public Data visitBoolVarElement(pascalParser.BoolVarElementContext ctx) {
+        String varName = ctx.getText();
+
+        // Retrieve the value using the variable name as the key
+        Data value = localVars.peek().get(varName);
+        System.out.println("Retrieved value: " + value);
+
+        return value;
+    }
+
+    // Base case, returning the boolean value itself
+    @Override
+    public Data visitBoolValueElement(pascalParser.BoolValueElementContext ctx) {
         Boolean elementValue = Boolean.valueOf(ctx.getText());
         Data element = new Data(elementValue);
 
