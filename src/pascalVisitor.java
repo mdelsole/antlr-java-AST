@@ -28,35 +28,49 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(pascalParser.ProgramContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#variable}.
+	 * Visit a parse tree produced by {@link pascalParser#variableBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariable(pascalParser.VariableContext ctx);
+	T visitVariableBlock(pascalParser.VariableBlockContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#varDeclaration}.
+	 * Visit a parse tree produced by the {@code varInitialization}
+	 * labeled alternative in {@link pascalParser#varDec}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarInitialization(pascalParser.VarInitializationContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code varDeclaration}
+	 * labeled alternative in {@link pascalParser#varDec}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitVarDeclaration(pascalParser.VarDeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#vNameList}.
+	 * Visit a parse tree produced by {@link pascalParser#varValue}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVNameList(pascalParser.VNameListContext ctx);
+	T visitVarValue(pascalParser.VarValueContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#program_block}.
+	 * Visit a parse tree produced by {@link pascalParser#varNameList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProgram_block(pascalParser.Program_blockContext ctx);
+	T visitVarNameList(pascalParser.VarNameListContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#statement_list}.
+	 * Visit a parse tree produced by {@link pascalParser#programBlock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStatement_list(pascalParser.Statement_listContext ctx);
+	T visitProgramBlock(pascalParser.ProgramBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#statementList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatementList(pascalParser.StatementListContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link pascalParser#statement}.
 	 * @param ctx the parse tree
@@ -70,23 +84,95 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatements(pascalParser.StatementsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#arith_expr}.
+	 * Visit a parse tree produced by the {@code mathElementExpr}
+	 * labeled alternative in {@link pascalParser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArith_expr(pascalParser.Arith_exprContext ctx);
+	T visitMathElementExpr(pascalParser.MathElementExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#bool_expr}.
+	 * Visit a parse tree produced by the {@code spclExpr}
+	 * labeled alternative in {@link pascalParser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBool_expr(pascalParser.Bool_exprContext ctx);
+	T visitSpclExpr(pascalParser.SpclExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#if_block}.
+	 * Visit a parse tree produced by the {@code arithExpr}
+	 * labeled alternative in {@link pascalParser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIf_block(pascalParser.If_blockContext ctx);
+	T visitArithExpr(pascalParser.ArithExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arithExprElement}
+	 * labeled alternative in {@link pascalParser#mathElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArithExprElement(pascalParser.ArithExprElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code realElement}
+	 * labeled alternative in {@link pascalParser#mathElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRealElement(pascalParser.RealElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mathVarElement}
+	 * labeled alternative in {@link pascalParser#mathElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMathVarElement(pascalParser.MathVarElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code notExpr}
+	 * labeled alternative in {@link pascalParser#logicExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotExpr(pascalParser.NotExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code logicElementExpr}
+	 * labeled alternative in {@link pascalParser#logicExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogicElementExpr(pascalParser.LogicElementExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code boolExpr}
+	 * labeled alternative in {@link pascalParser#logicExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolExpr(pascalParser.BoolExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code boolExprElement}
+	 * labeled alternative in {@link pascalParser#logicElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolExprElement(pascalParser.BoolExprElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code boolElement}
+	 * labeled alternative in {@link pascalParser#logicElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolElement(pascalParser.BoolElementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code boolVarElement}
+	 * labeled alternative in {@link pascalParser#logicElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolVarElement(pascalParser.BoolVarElementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#ifBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfBlock(pascalParser.IfBlockContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link pascalParser#condition}.
 	 * @param ctx the parse tree
@@ -94,11 +180,11 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCondition(pascalParser.ConditionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link pascalParser#case_statement}.
+	 * Visit a parse tree produced by {@link pascalParser#caseStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCase_statement(pascalParser.Case_statementContext ctx);
+	T visitCaseStatement(pascalParser.CaseStatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link pascalParser#readln}.
 	 * @param ctx the parse tree
@@ -111,10 +197,4 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWriteln(pascalParser.WritelnContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link pascalParser#spcl_math_expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSpcl_math_expr(pascalParser.Spcl_math_exprContext ctx);
 }

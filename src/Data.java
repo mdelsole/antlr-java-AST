@@ -9,6 +9,11 @@ public class Data {
         this.data = data;
     }
 
+    public Double toDouble(){
+        // TODO: Double.valueOf(data) doesn't work?
+        return (Double) data;
+    }
+
     @Override
     public String toString() {
         return String.valueOf(data);

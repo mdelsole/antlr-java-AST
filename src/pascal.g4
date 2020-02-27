@@ -26,93 +26,83 @@ grammar pascal;
 
 start: program EOF;
 
-program: PROGRAM NAME SMCOLN (variable)? program_block;
+program: PROGRAM NAME SMCOLN (variableBlock)? programBlock;
 
 /***** Variable declarations *****/
 
-variable: VAR varDeclaration+;
-varDeclaration: vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' varType SMCOLN;
-varType: (BOOL | REAL | arith_expr | bool_expr);
+variableBlock: VAR varDec+;
+varDec:
+    varNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' varValue SMCOLN         #varInitialization
+    | varNameList COLON type=(BOOLEANTYPE | REALTYPE) SMCOLN                    #varDeclaration
+    ;
 
-/*
-varDeclaration: vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' BOOL SMCOLN
-    | vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' REAL SMCOLN
-    | vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' arith_expr SMCOLN
-    | vNameList COLON type=(BOOLEANTYPE | REALTYPE) '=' bool_expr SMCOLN;*/
-
-vNameList: NAME (COMMA NAME)*;
+varValue: (mathExpr | logicExpr);
+varNameList: NAME (COMMA NAME)*;
 
 /***** Main program block *****/
 
-program_block: BEGIN statement_list END SMCOLN;
-statement_list: statement | statement SMCOLN statement_list;
-statement: (program_block | if_block | case_statement | writeln | readln)+;
+programBlock: BEGIN statementList END SMCOLN;
+statementList: statement | statement SMCOLN statementList;
+statement: (programBlock | ifBlock | caseStatement | writeln | readln)+;
 statements: statement (SMCOLN statement)*;
-
 
 /***** Basic arithmetic expressions with variables *****/
 
-// For 'real' (double) variables
-arith_expr:
-       '(' e=arith_expr ')'
-       | el=arith_expr '*' er=arith_expr
-       | el=arith_expr '/' er=arith_expr
-       | el=arith_expr '+' er=arith_expr
-       | el=arith_expr '-' er=arith_expr
-       // Base
-       | REAL
-       // Variable names
-       | NAME
-       // Special expressions
-       | spcl_math_expr
-       ;
+mathExpr:
+   el=mathExpr op=(MULT | DIV | PLUS | MINUS) er=mathExpr                       #arithExpr
+   | expr=(SQRT|SIN|COS|LN|EXP) '(' contents=mathExpr ')'                       #spclExpr
+   // Base
+   | mathElement                                                                #mathElementExpr
+   ;
+
+mathElement:
+   '(' mathExpr ')'                                                             #arithExprElement
+   | REAL                                                                       #realElement
+   | NAME                                                                       #mathVarElement;
 
 /***** Boolean/logical Expressions *****/
 
-bool_expr:
-    el=bool_expr AND er=bool_expr
-    | el=bool_expr OR er=bool_expr
-    | NOT el=bool_expr
+logicExpr:
+    el=logicExpr op=(AND | OR) er=logicExpr                                     #boolExpr
+    | NOT el=logicExpr                                                          #notExpr
     // Base
-    | BOOL
-    // Variable names
-    | NAME
+    | logicElement                                                              #logicElementExpr
     ;
+
+logicElement:
+   '(' logicExpr ')'                                                            #boolExprElement
+   | BOOL                                                                       #boolElement
+   | NAME                                                                       #boolVarElement;
+
 
 /***** Decision Making (if-then-else, case) *****/
 
-if_block: IF condition THEN statement (ELSE IF bool_expr THEN statement)* (ELSE statement)?;
+ifBlock: IF condition THEN statement (ELSE IF logicExpr THEN statement)* (ELSE statement)?;
 
 condition:
-    el=bool_expr '=' er=bool_expr
-    | el=bool_expr NOT '=' er=bool_expr
+    el=logicExpr '=' er=logicExpr
+    | el=logicExpr NOT '=' er=logicExpr
     | BOOL
     | NAME
     ;
 
 // TODO: Case
 
-case_statement: CASE condition OF statement_list  SMCOLN  (SMCOLN ELSE statements)? END;
+caseStatement: CASE condition OF statementList  SMCOLN  (SMCOLN ELSE statements)? END;
 
 /***** Special Expressions: Readln, Writeln, sqrt, sin, cos, ln, exp *****/
 
 // Readln, Writeln
 readln: READLN '('NAME')' SMCOLN;
 
-writeln: WRITELN '('spcl_math_expr')' SMCOLN
-         | WRITELN '('NAME')' SMCOLN
+writeln:
+         WRITELN '('NAME')' SMCOLN
          | WRITELN '('REAL')' SMCOLN
          | WRITELN '('BOOL')' SMCOLN
          ;
 
-// For sqrt, sin, cos, ln, and exp
-spcl_math_expr:
-    expr=SQRT '(' contents=arith_expr ')'
-    | expr=SIN '(' contents=arith_expr ')'
-    | expr=COS '(' contents=arith_expr ')'
-    | expr=LN '(' contents=arith_expr ')'
-    | expr=EXP '(' contents=arith_expr ')'
-    ;
+
+//whileLoop: WHILE '('? condition ')' DO loopBlock;
 
 
 /*************** Lexer rules (breaking up the input). Must be uppercase names! ***************/

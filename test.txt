@@ -1,7 +1,8 @@
 program mytests;
 VAR
-    i, j : boolean = true;
-    k : real = 2.5;
+    i : boolean;
+    j, m : boolean = true;
+    k : real = 2.5*4;
 
 BEGIN
     writeln(Yo);
