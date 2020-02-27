@@ -40,6 +40,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [x] Variable declarations
 - [ ] Main program block
 - [ ] Arithmetic expressions (with variables)
+- [ ] Negative numbers
 - [ ] Boolean expressions (with variables)
 - [ ] If-then-else statements
 - [ ] Case statements
