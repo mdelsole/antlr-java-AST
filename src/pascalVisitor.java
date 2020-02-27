@@ -126,6 +126,13 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArithVarElement(pascalParser.ArithVarElementContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code boolArithEquality}
+	 * labeled alternative in {@link pascalParser#logicExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolArithEquality(pascalParser.BoolArithEqualityContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code boolElement}
 	 * labeled alternative in {@link pascalParser#logicExpr}.
 	 * @param ctx the parse tree
@@ -173,12 +180,6 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIfBlock(pascalParser.IfBlockContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link pascalParser#condition}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCondition(pascalParser.ConditionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link pascalParser#caseStatement}.
 	 * @param ctx the parse tree

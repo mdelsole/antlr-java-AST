@@ -28,7 +28,9 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return visitChildren(ctx);
     }
 
-    /***** Variable block *****/
+
+    /*************** Variable block ***************/
+
 
     // Where vars are just declared, but not initialized with a value
     @Override
@@ -109,7 +111,9 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return value;
     }
 
-    /***** Math expressions *****/
+
+    /*************** Arithmetic expressions ***************/
+
 
     // Handle *, /, +, -
     @Override
@@ -193,7 +197,9 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return element;
     }
 
-    /***** Boolean expressions *****/
+
+    /*************** Boolean expressions ***************/
+
 
     // Handle 'and', 'or'
     @Override
@@ -210,7 +216,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
             result = new Data(leftElement.toBoolean() || rightElement.toBoolean());
         }
         else{
-            System.out.println("Unknown operation");
+            System.out.println("Unknown boolean operation");
         }
 
         return result;
@@ -224,12 +230,46 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return result;
     }
 
+    // Handle arithmetic equality
+    @Override
+    public Data visitBoolArithEquality(pascalParser.BoolArithEqualityContext ctx) {
+        Data leftElement = this.visit(ctx.el);
+        Data rightElement = this.visit(ctx.er);
+
+        Data result = null;
+
+        if (ctx.op.getType() == pascalParser.EQU){
+            result = new Data(leftElement.toDouble().equals(rightElement.toDouble()));
+        }
+        else if (ctx.op.getType() == pascalParser.NEQU){
+            result = new Data(!(leftElement.toDouble().equals(rightElement.toDouble())));
+        }
+        else if (ctx.op.getType() == pascalParser.GRT){
+            result = new Data(leftElement.toDouble() >= (rightElement.toDouble()));
+        }
+        else if (ctx.op.getType() == pascalParser.GRTEQ){
+            result = new Data(leftElement.toDouble() > (rightElement.toDouble()));
+        }
+        else if (ctx.op.getType() == pascalParser.LST){
+            result = new Data(leftElement.toDouble() < (rightElement.toDouble()));
+        }
+        else if (ctx.op.getType() == pascalParser.LSTEQ){
+            result = new Data(leftElement.toDouble() <= (rightElement.toDouble()));
+        }
+        else{
+            System.out.println("Unknown arithmetic equality operation");
+        }
+
+        return result;
+    }
+
     // Handle parentheses
     @Override
     public Data visitBoolExprElement(pascalParser.BoolExprElementContext ctx) {
         return this.visit(ctx.logicExpr());
     }
 
+    // Handle variables
     @Override
     public Data visitBoolVarElement(pascalParser.BoolVarElementContext ctx) {
         String varName = ctx.getText();
@@ -250,7 +290,16 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return element;
     }
 
-    /***** Utility methods *****/
+
+    /*************** Decision Making (if-then-else, case) ***************/
+
+
+    @Override
+    public Data visitIfBlock(pascalParser.IfBlockContext ctx) {
+        return super.visitIfBlock(ctx);
+    }
+
+    /*************** Utility methods ***************/
 
 
     // Separate the variable name list into usable names

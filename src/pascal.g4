@@ -60,11 +60,12 @@ mathElement:
    | REAL                                                                       #arithValueElement
    | NAME                                                                       #arithVarElement;
 
-/***** Boolean/logical Expressions *****/
+/***** Boolean/logical expressions with variables *****/
 
 logicExpr:
     el=logicExpr op=(AND | OR) er=logicExpr                                     #boolExpr
     | NOT el=logicExpr                                                          #boolNotExpr
+    | el=mathExpr op=(EQU | NEQU | GRT | GRTEQ | LST | LSTEQ) er=mathExpr       #boolArithEquality
     // Base
     | logicElement                                                              #boolElement
     ;
@@ -77,18 +78,11 @@ logicElement:
 
 /***** Decision Making (if-then-else, case) *****/
 
-ifBlock: IF condition THEN statement (ELSE IF logicExpr THEN statement)* (ELSE statement)?;
-
-condition:
-    el=logicExpr '=' er=logicExpr
-    | el=logicExpr NOT '=' er=logicExpr
-    | BOOL
-    | NAME
-    ;
+ifBlock: IF logicExpr THEN statement (ELSE IF logicExpr THEN statement)* (ELSE statement)?;
 
 // TODO: Case
 
-caseStatement: CASE condition OF statementList  SMCOLN  (SMCOLN ELSE statements)? END;
+caseStatement: CASE logicExpr OF statementList  SMCOLN  (SMCOLN ELSE statements)? END;
 
 /***** Special Expressions: Readln, Writeln, sqrt, sin, cos, ln, exp *****/
 
@@ -132,6 +126,13 @@ PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
+
+EQU: '=';
+NEQU: '<>';
+GRT: '>';
+GRTEQ: '>=';
+LST: '<';
+LSTEQ: '<=';
 
 AND : 'and' ;
 OR : 'or' ;
