@@ -39,11 +39,12 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [ ] Program name
 - [x] Variable declarations
 - [ ] Main program block
-- [ ] Arithmetic expressions (with variables)
-- [ ] Boolean expressions (with variables)
+- [x] Arithmetic expressions (with variables)
+- [ ] Negative numbers
+- [x] Boolean expressions (with variables)
 - [ ] If-then-else statements
 - [ ] Case statements
-- [ ] Special math expressions (sqrt, sin, cos, ln, exp)
+- [x] Special math expressions (sqrt, sin, cos, ln, exp)
 - [ ] Readln
 - [ ] Writeln
 - [ ] Variable assignment
