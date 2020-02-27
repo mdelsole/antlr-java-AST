@@ -331,7 +331,22 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     @Override
     public Data visitIfBlock(pascalParser.IfBlockContext ctx) {
+        // Whether or not we need to execute the else at the end
+        boolean complete = false;
 
+        // Loop through the if statement, execute it if the condition evaluates to true
+        for (int i = 0; i < ctx.conditional().size(); i++) {
+            if (this.visit(ctx.conditional(i).logicExpr()).toBoolean().equals(true)){
+                this.visit(ctx.conditional(i).statement());
+                complete = true;
+                break;
+            }
+        }
+
+        // Execute the else, if nothing else was true
+        if (!complete){
+            this.visit(ctx.statement());
+        }
 
         return null;
     }
