@@ -218,4 +218,40 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWhileLoop(pascalParser.WhileLoopContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#forLoop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForLoop(pascalParser.ForLoopContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#forVar}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForVar(pascalParser.ForVarContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#functionName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionName(pascalParser.FunctionNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#functionDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunctionDeclaration(pascalParser.FunctionDeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#parameterList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameterList(pascalParser.ParameterListContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#parameterGroup}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameterGroup(pascalParser.ParameterGroupContext ctx);
 }

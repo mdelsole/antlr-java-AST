@@ -12,10 +12,13 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     /*************** Our old @members, modified to utilize generic types ***************/
 
 
-    // Global vars will be the variables at the lowest scope level
-    HashMap<String, Data> globalVars = new HashMap<String, Data>();
     // Our "scope"; each level of the stack will store the local variables for that "scope"
     Stack<HashMap<String, Data>> localVars = new Stack<HashMap<String, Data>>();
+    // Global vars will be the variables at the lowest scope level
+    HashMap<String, Data> globalVars = new HashMap<String, Data>();
+
+    // Keep a map of all the user-defined functions
+    HashMap<String, pascalParser.FunctionDeclarationContext> functions = new HashMap<>();
 
 
     /*************** Implementing the abstract methods of pascalBaseVisitor ***************/
@@ -370,13 +373,14 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return null;
     }
 
-
+    // Print a variable
     @Override
     public Data visitWriteVar(pascalParser.WriteVarContext ctx) {
 
         return this.visit(ctx.varValue());
     }
 
+    // Print text
     @Override
     public Data visitWriteText(pascalParser.WriteTextContext ctx) {
         String text = ctx.TEXT().getText();

@@ -26,7 +26,7 @@ grammar pascal;
 
 start: program EOF;
 
-program: PROGRAM NAME SMCOLN (variableBlock)? programBlock;
+program: PROGRAM NAME SMCOLN (variableBlock)? (functionDeclaration)* programBlock;
 
 /***** Variables *****/
 
@@ -46,7 +46,7 @@ varAssignment: varNameList ':=' varValue SMCOLN;
 programBlock: BEGIN statementList END SMCOLN;
 statementList: statement+;
 // TODO: Case
-statement: (programBlock | ifBlock | writeln | readln | whileLoop | varAssignment);
+statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | varAssignment);
 
 /***** Basic arithmetic expressions with variables *****/
 
@@ -105,6 +105,24 @@ writeContent:
 
 whileLoop: WHILE logicExpr DO statementList;
 
+forLoop: FOR forVar TO mathExpr DO statementList;
+
+// For temporary for loop iteration variable
+forVar: NAME ':=' mathExpr;
+
+/***** User defined functions *****/
+
+
+functionName: NAME;
+
+functionDeclaration: FUNCTION functionName (parameterList)? COLON
+                     funcType=(BOOLEANTYPE | REALTYPE) SMCOLN variableBlock programBlock;
+
+parameterList: '('parameterGroup (SMCOLN parameterGroup)*')';
+
+parameterGroup: varNameList COLON paramType=(BOOLEANTYPE | REALTYPE);
+
+
 /*************** Lexer rules (breaking up the input). Must be uppercase names! ***************/
 
 
@@ -126,6 +144,9 @@ WRITELN: 'writeln';
 WHILE: 'while';
 DO: 'do';
 FOR: 'for';
+TO: 'to';
+
+FUNCTION: 'function';
 
 
 COMMENT1: '(*' .*? '*)' -> skip;
