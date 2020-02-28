@@ -38,7 +38,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [x] Implement visitor
 - [x] Program name
 - [x] Variable declarations
-- [ ] Main program block
+- [x] Main program block
 - [x] Arithmetic expressions (with variables)
 - [ ] Negative numbers
 - [x] Boolean expressions (with variables)
@@ -46,12 +46,12 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [ ] Case statements
 - [x] Special math expressions (sqrt, sin, cos, ln, exp)
 - [ ] Readln
-- [ ] Writeln
+- [x] Writeln
 - [x] Variable assignment
-- [ ] Static scoping
-- [ ] Global variables vs. local variables
-- [ ] Scope chaining and position tracking
-- [ ] While loops
+- [x] Static scoping
+- [x] Global variables vs. local variables
+- [x] Scope chaining and position tracking
+- [x] While loops
 - [ ] For loops
 - [ ] Break/continue in loops
 - [ ] User defined functions
