@@ -17,6 +17,11 @@ public class Data {
         return (Boolean) data;
     }
 
+    // For for-loop temp vars
+    public void add1(){
+        this.data = (Double) this.data + 1;
+    }
+
     @Override
     public String toString() {
         return String.valueOf(data);

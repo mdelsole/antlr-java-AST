@@ -46,4 +46,10 @@ BEGIN
 
     writeln('K is now: ', k);
 
+    writeln('For looping...');
+    for x := 0 to 8 do
+    BEGIN
+        writeln(x);
+    END;
+
 END;

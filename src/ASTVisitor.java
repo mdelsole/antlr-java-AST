@@ -435,8 +435,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         }
 
         // Once we're done with our loop, return to the original scope
-        HashMap<String, Data> currentScope = localVars.pop();
-        // TODO: Do scope variables transfer over?
+        localVars.pop();
 
         return null;
     }
@@ -450,20 +449,29 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         newScope.putAll(localVars.peek());
         localVars.push(newScope);
 
-        Double forVar = this.visit(ctx.forVar().mathExpr()).toDouble();
+        Data tempVar = this.visit(ctx.forVar());
+
         Double cond = this.visit(ctx.mathExpr()).toDouble();
 
-        for(double i = forVar; i <= cond; i++){
+        for(double i = tempVar.toDouble(); i <= cond; i++){
             this.visit(ctx.programBlock());
+            tempVar.add1();
         }
 
         // Once we're done with our loop, return to the original scope
-        HashMap<String, Data> currentScope = localVars.pop();
-        // TODO: Do scope variables transfer over?
+        localVars.pop();
 
         return null;
     }
 
+    @Override
+    public Data visitForVar(pascalParser.ForVarContext ctx) {
+        String id = ctx.NAME().getText();
+        Data value = this.visit(ctx.mathExpr());
+
+        localVars.peek().put(id, value);
+        return value;
+    }
 
     /*************** User-defined functions ***************/
 
