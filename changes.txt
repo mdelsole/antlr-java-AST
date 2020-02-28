@@ -1,0 +1,24 @@
+@Override
+    public Data visitReadln(pascalParser.ReadlnContext ctx){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Input: ");
+
+        if(scanner.hasNextDouble()){
+            double dou = scanner.nextDouble();
+            String name = ctx.NAME().getText();
+            Data value = new Data(dou);
+            localVars.peek().put(name, value);
+            //System.out.println("Assigned Name: " + name + ", Value: " + value);
+        }
+        else if (scanner.hasNextBoolean()){
+            boolean bo = scanner.nextBoolean();
+            String name = ctx.NAME().getText();
+            Data value = new Data(bo);
+            localVars.peek().put(name, value);
+            //System.out.println("Assigned Name: " + name + ", Value: " + value);
+        }
+        else{
+            System.out.println("NOT A VALID INPUT");
+        }
+        return null;
+    }
