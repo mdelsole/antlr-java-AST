@@ -52,7 +52,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [x] Global variables vs. local variables
 - [x] Scope chaining and position tracking
 - [x] While loops
-- [ ] For loops
+- [x] For loops
 - [ ] Break/continue in loops
 - [x] User defined functions
 - [x] User defined procedures
