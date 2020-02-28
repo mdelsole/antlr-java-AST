@@ -17,6 +17,10 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     // Keep a map of all the user-defined functions
     HashMap<String, pascalParser.FunctionDeclarationContext> functions = new HashMap<>();
+    // Keep a map of all the user-defined procedures
+    HashMap<String, pascalParser.ProcedureDeclarationContext> procedures = new HashMap<>();
+    List<String> procedureVars = new ArrayList<>();
+
 
 
     /*************** Implementing the abstract methods of pascalBaseVisitor ***************/
@@ -217,7 +221,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     @Override
     public Data visitArithVarElement(pascalParser.ArithVarElementContext ctx) {
         String varName = ctx.getText();
-
+        procedureVars.add(varName);
         // Retrieve the value using the variable name as the key
         Data value = localVars.peek().get(varName);
         //System.out.println("Retrieved value: " + value);
@@ -378,7 +382,6 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     // Print a variable
     @Override
     public Data visitWriteVar(pascalParser.WriteVarContext ctx) {
-
         return this.visit(ctx.varValue());
     }
 
@@ -466,6 +469,8 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     @Override
     public Data visitForVar(pascalParser.ForVarContext ctx) {
+        System.out.println("Here");
+
         String id = ctx.NAME().getText();
         Data value = this.visit(ctx.mathExpr());
 
@@ -500,17 +505,6 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         pascalParser.FunctionDeclarationContext function = functions.get(ctx.NAME().getText());
         // Get the name of the function
         String functionName = ctx.NAME().getText();
-
-        // Determine the type of the Data, set to default value
-        Data result = null;
-        if (function.funcType.getType() == pascalParser.BOOLEANTYPE){
-            result = new Data(false);
-        }
-        else if (function.funcType.getType() == pascalParser.REALTYPE){
-            result = new Data(0.0);
-        }
-        localVars.peek().put(functionName, result);
-        //System.out.println("Paramset: " + function.parameterList().parameterSet());
 
         for (int i = 0; i < function.parameterList().parameterSet().size(); i++){
             String varName = function.parameterList().parameterSet(i).varNameList().getText();
@@ -551,6 +545,86 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         localVars.pop();
 
         return returnVal;
+    }
+
+    // Declare a procedure
+    @Override
+    public Data visitProcedureDeclaration(pascalParser.ProcedureDeclarationContext ctx) {
+        String procedureName = ctx.NAME().getText();
+        // Put the function and its context in our store of functions
+        procedures.put(procedureName, ctx);
+        return null;
+    }
+
+
+    @Override
+    public Data visitProcedureCall(pascalParser.ProcedureCallContext ctx) {
+        // Make a new scope for within the function
+        HashMap<String, Data> newScope = new HashMap<String, Data>();
+        // Make sure the new scope has access to the global variables too by using putAll()
+        newScope.putAll(localVars.peek());
+        localVars.push(newScope);
+
+        // Get the context of the function
+        pascalParser.ProcedureDeclarationContext procedure = procedures.get(ctx.NAME().getText());
+
+        for (int i = 0; i < procedure.parameterList().parameterSet().size(); i++){
+            String varName = procedure.parameterList().parameterSet(i).varNameList().getText();
+            //System.out.println("VarName: " + varName);
+            String[] vNames;
+            if (varName.contains(",")) {
+                vNames = parseString(varName);
+            }
+            else{
+                vNames = null;
+            }
+
+            // Place the variable name and its data value into this scope's variables (i.e. localVars)
+            if (vNames == null) {
+                Data val = this.visit(ctx.parameterCallList().varValue(i));
+                // peek() gets us the top element, i.e. current scope
+                localVars.peek().put(varName, val);
+            }
+            else{
+                for (int k = 0; k < vNames.length; k++){
+                    //System.out.println("Vnames: " + vNames[k]);
+                    Data val = this.visit(ctx.parameterCallList().varValue(i+k));
+                    //System.out.println("Added2: " + val);
+                    // peek() gets us the top element, i.e. current scope
+                    localVars.peek().put(vNames[k], val);
+                    //System.out.println("Table: " + localVars.peek());
+
+                }
+            }
+        }
+
+
+        this.visitChildren(procedure);
+        //System.out.println("Return: " + returnVal);
+
+        // Move back down and transfer over any variables as necessary
+        HashMap<String, Data> current = localVars.pop();
+        HashMap<String, Data> parent = localVars.peek();
+
+
+        // Strip away redundant variables
+        HashMap<String, Data> newCurrent = new HashMap<>(current);
+        for(Map.Entry<String, Data> entry : current.entrySet()) {
+            if (entry.getKey().equals("result")) {
+                newCurrent.remove(entry.getKey());
+            }
+        }
+
+        int varsPosition = 0;
+        for(Map.Entry<String, Data> entry : newCurrent.entrySet()) {
+            if(!parent.containsKey(entry.getKey())){
+                Data value = newCurrent.get(entry.getKey());
+                parent.put(procedureVars.get(varsPosition), value);
+                varsPosition += 1;
+            }
+        }
+
+        return null;
     }
 
     /*************** Utility methods ***************/

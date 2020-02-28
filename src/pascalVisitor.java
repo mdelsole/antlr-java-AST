@@ -237,6 +237,12 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionDeclaration(pascalParser.FunctionDeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link pascalParser#procedureDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProcedureDeclaration(pascalParser.ProcedureDeclarationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link pascalParser#parameterList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -254,6 +260,12 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunctionCall(pascalParser.FunctionCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#procedureCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProcedureCall(pascalParser.ProcedureCallContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link pascalParser#parameterCallList}.
 	 * @param ctx the parse tree

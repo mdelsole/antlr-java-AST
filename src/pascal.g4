@@ -26,7 +26,7 @@ grammar pascal;
 
 start: program EOF;
 
-program: PROGRAM NAME SMCOLN (variableBlock)? (functionDeclaration)* programBlock;
+program: PROGRAM NAME SMCOLN (variableBlock)? (functionDeclaration)* (procedureDeclaration)* programBlock;
 
 /***** Variables *****/
 
@@ -36,7 +36,7 @@ varDec:
     | varNameList COLON type=(BOOLEANTYPE | REALTYPE) SMCOLN                    #varDeclaration
     ;
 
-varValue: (mathExpr | logicExpr | functionCall);
+varValue: (mathExpr | logicExpr | functionCall | procedureCall);
 varNameList: NAME (COMMA NAME)*;
 
 varAssignment: varNameList ':=' varValue SMCOLN;
@@ -46,7 +46,7 @@ varAssignment: varNameList ':=' varValue SMCOLN;
 programBlock: BEGIN statementList END SMCOLN;
 statementList: statement+;
 // TODO: Case
-statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | functionCall | varAssignment);
+statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | functionCall | procedureCall | varAssignment);
 
 /***** Basic arithmetic expressions with variables *****/
 
@@ -116,11 +116,16 @@ forVar: NAME ':=' mathExpr;
 functionDeclaration: FUNCTION NAME (parameterList)? COLON
                      funcType=(BOOLEANTYPE | REALTYPE) SMCOLN variableBlock programBlock;
 
+procedureDeclaration: PROCEDURE NAME (parameterList)? COLON
+                     procType=(BOOLEANTYPE | REALTYPE) SMCOLN variableBlock programBlock;
+
 parameterList: '('parameterSet (SMCOLN parameterSet)*')';
 
 parameterSet: varNameList COLON paramType=(BOOLEANTYPE | REALTYPE);
 
 functionCall: NAME parameterCallList;
+
+procedureCall: NAME parameterCallList SMCOLN;
 
 parameterCallList: '(' varValue (COMMA varValue)* ')';
 
@@ -148,6 +153,7 @@ FOR: 'for';
 TO: 'to';
 
 FUNCTION: 'function';
+PROCEDURE: 'procedure';
 
 
 COMMENT1: '(*' .*? '*)' -> skip;

@@ -1,0 +1,25 @@
+program mytests;
+VAR
+    k : real = 8;
+    x : real = 6;
+
+procedure divide3(num1: real): real;
+VAR
+    result : real;
+
+BEGIN
+if (num1 > 3) then
+    num1 := (num1)/3;
+    writeln(num1);
+
+else
+    num1 := 3;
+
+END;
+
+BEGIN
+
+    divide3(x);
+    writeln(x);
+
+END;

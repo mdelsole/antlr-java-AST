@@ -19,6 +19,19 @@ BEGIN
    max := result;
 END;
 
+procedure divide3(num1: real): real;
+VAR
+    result : real;
+
+BEGIN
+if (num1 > 3) then
+    num1 := (num1)/3;
+
+else
+    num1 := 2;
+
+END;
+
 BEGIN
     writeln('K is: ', k);
     writeln('J is: ', j);
@@ -51,5 +64,9 @@ BEGIN
     BEGIN
         writeln(x);
     END;
+
+    divide3(k);
+    writeln('K is now: ', k);
+
 
 END;
