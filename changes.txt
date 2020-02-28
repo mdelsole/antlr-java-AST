@@ -1,0 +1,51 @@
+/////////////////////////////////////////		READLN		//////////////////////////////////////////
+
+    @Override
+    public Data visitReadln(pascalParser.ReadlnContext ctx){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Input: ");
+
+        if(scanner.hasNextDouble()){
+            double dou = scanner.nextDouble();
+            String name = ctx.NAME().getText();
+            Data value = new Data(dou);
+            localVars.peek().put(name, value);
+            //System.out.println("Assigned Name: " + name + ", Value: " + value);
+        }
+        else if (scanner.hasNextBoolean()){
+            boolean bo = scanner.nextBoolean();
+            String name = ctx.NAME().getText();
+            Data value = new Data(bo);
+            localVars.peek().put(name, value);
+            //System.out.println("Assigned Name: " + name + ", Value: " + value);
+        }
+        else{
+            System.out.println("NOT A VALID INPUT");
+        }
+        return null;
+    }
+
+/////////////////////////////////////////		ForLoop		//////////////////////////////////////////
+
+    @Override
+    public Data visitForLoop(pascalParser.ForLoopContext ctx) {
+
+        // Make a new scope for within the while loop
+        HashMap<String, Data> newScope = new HashMap<String, Data>();
+        // Make sure the new scope has access to the global variables too by using putAll()
+        newScope.putAll(localVars.peek());
+        localVars.push(newScope);
+
+        Double forVar = this.visit(ctx.forVar().mathExpr()).toDouble();
+        Double cond = this.visit(ctx.mathExpr()).toDouble();
+
+        for(double i = forVar; i <= cond; i++){
+            this.visit(ctx.programBlock());
+        }
+
+        // Once we're done with our loop, return to the original scope
+        HashMap<String, Data> currentScope = localVars.pop();
+        // TODO: Do scope variables transfer over?
+
+        return null;
+    }
