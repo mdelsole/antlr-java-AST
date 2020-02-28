@@ -36,7 +36,7 @@ varDec:
     | varNameList COLON type=(BOOLEANTYPE | REALTYPE) SMCOLN                    #varDeclaration
     ;
 
-varValue: (mathExpr | logicExpr);
+varValue: (mathExpr | logicExpr | functionCall);
 varNameList: NAME (COMMA NAME)*;
 
 varAssignment: varNameList ':=' varValue SMCOLN;
@@ -46,7 +46,7 @@ varAssignment: varNameList ':=' varValue SMCOLN;
 programBlock: BEGIN statementList END SMCOLN;
 statementList: statement+;
 // TODO: Case
-statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | varAssignment);
+statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | functionCall | varAssignment);
 
 /***** Basic arithmetic expressions with variables *****/
 
@@ -103,25 +103,26 @@ writeContent:
 
 /***** Loops: While and For *****/
 
-whileLoop: WHILE logicExpr DO statementList;
+whileLoop: WHILE logicExpr DO programBlock;
 
-forLoop: FOR forVar TO mathExpr DO statementList;
+forLoop: FOR forVar TO mathExpr DO programBlock;
 
 // For temporary for loop iteration variable
 forVar: NAME ':=' mathExpr;
 
-/***** User defined functions *****/
+/***** User-defined functions *****/
 
 
-functionName: NAME;
-
-functionDeclaration: FUNCTION functionName (parameterList)? COLON
+functionDeclaration: FUNCTION NAME (parameterList)? COLON
                      funcType=(BOOLEANTYPE | REALTYPE) SMCOLN variableBlock programBlock;
 
-parameterList: '('parameterGroup (SMCOLN parameterGroup)*')';
+parameterList: '('parameterSet (SMCOLN parameterSet)*')';
 
-parameterGroup: varNameList COLON paramType=(BOOLEANTYPE | REALTYPE);
+parameterSet: varNameList COLON paramType=(BOOLEANTYPE | REALTYPE);
 
+functionCall: NAME parameterCallList;
+
+parameterCallList: '(' varValue (COMMA varValue)* ')';
 
 /*************** Lexer rules (breaking up the input). Must be uppercase names! ***************/
 

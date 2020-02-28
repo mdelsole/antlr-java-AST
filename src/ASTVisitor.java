@@ -1,7 +1,5 @@
 
-import java.util.HashMap;
-import java.util.Stack;
-import java.util.List;
+import java.util.*;
 import java.lang.Math;
 
 
@@ -275,6 +273,9 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         Data leftElement = this.visit(ctx.el);
         Data rightElement = this.visit(ctx.er);
 
+        //System.out.println("Le: " + leftElement.toString());
+        //System.out.println("Re: " + rightElement.toString());
+
         Data result = null;
 
         if (ctx.op.getType() == pascalParser.EQU){
@@ -364,6 +365,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     @Override
     public Data visitWriteln(pascalParser.WritelnContext ctx) {
+
         StringBuilder result = new StringBuilder();
         // Loop through the if statement, execute it if the condition evaluates to true
         for (int i = 0; i < ctx.writeContent().size(); i++) {
@@ -389,6 +391,30 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return new Data(text);
     }
 
+    public Data visitReadln(pascalParser.ReadlnContext ctx){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Input: ");
+
+        if(scanner.hasNextDouble()){
+            double dou = scanner.nextDouble();
+            String name = ctx.NAME().getText();
+            Data value = new Data(dou);
+            localVars.peek().put(name, value);
+            //System.out.println("Assigned Name: " + name + ", Value: " + value);
+        }
+        else if (scanner.hasNextBoolean()){
+            boolean bo = scanner.nextBoolean();
+            String name = ctx.NAME().getText();
+            Data value = new Data(bo);
+            localVars.peek().put(name, value);
+            //System.out.println("Assigned Name: " + name + ", Value: " + value);
+        }
+        else{
+            System.out.println("NOT A VALID INPUT");
+        }
+        return null;
+    }
+
     /*************** Loops: While and For ***************/
 
 
@@ -403,7 +429,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
         Boolean condition = this.visit(ctx.logicExpr()).toBoolean();
         while (condition){
-            this.visit(ctx.statementList());
+            this.visit(ctx.programBlock());
             // Re-evaluate the condition to determine if we continue
             condition = this.visit(ctx.logicExpr()).toBoolean();
         }
@@ -413,6 +439,110 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         // TODO: Do scope variables transfer over?
 
         return null;
+    }
+
+    @Override
+    public Data visitForLoop(pascalParser.ForLoopContext ctx) {
+
+        // Make a new scope for within the while loop
+        HashMap<String, Data> newScope = new HashMap<String, Data>();
+        // Make sure the new scope has access to the global variables too by using putAll()
+        newScope.putAll(localVars.peek());
+        localVars.push(newScope);
+
+        Double forVar = this.visit(ctx.forVar().mathExpr()).toDouble();
+        Double cond = this.visit(ctx.mathExpr()).toDouble();
+
+        for(double i = forVar; i <= cond; i++){
+            this.visit(ctx.programBlock());
+        }
+
+        // Once we're done with our loop, return to the original scope
+        HashMap<String, Data> currentScope = localVars.pop();
+        // TODO: Do scope variables transfer over?
+
+        return null;
+    }
+
+
+    /*************** User-defined functions ***************/
+
+
+    // Declare a function
+    @Override
+    public Data visitFunctionDeclaration(pascalParser.FunctionDeclarationContext ctx) {
+        String functionName = ctx.NAME().getText();
+        // Put the function and its context in our store of functions
+        functions.put(functionName, ctx);
+        return null;
+    }
+
+    // Call a function
+    @Override
+    public Data visitFunctionCall(pascalParser.FunctionCallContext ctx) {
+
+        // Make a new scope for within the function
+        HashMap<String, Data> newScope = new HashMap<String, Data>();
+        // Make sure the new scope has access to the global variables too by using putAll()
+        newScope.putAll(localVars.peek());
+        localVars.push(newScope);
+
+        //System.out.println("Function: " + ctx.NAME().getText());
+        // Get the context of the function
+        pascalParser.FunctionDeclarationContext function = functions.get(ctx.NAME().getText());
+        // Get the name of the function
+        String functionName = ctx.NAME().getText();
+
+        // Determine the type of the Data, set to default value
+        Data result = null;
+        if (function.funcType.getType() == pascalParser.BOOLEANTYPE){
+            result = new Data(false);
+        }
+        else if (function.funcType.getType() == pascalParser.REALTYPE){
+            result = new Data(0.0);
+        }
+        localVars.peek().put(functionName, result);
+        //System.out.println("Paramset: " + function.parameterList().parameterSet());
+
+        for (int i = 0; i < function.parameterList().parameterSet().size(); i++){
+            String varName = function.parameterList().parameterSet(i).varNameList().getText();
+            //System.out.println("VarName: " + varName);
+            String[] vNames;
+            if (varName.contains(",")) {
+                vNames = parseString(varName);
+            }
+            else{
+                vNames = null;
+            }
+
+            // Place the variable name and its data value into this scope's variables (i.e. localVars)
+            if (vNames == null) {
+                Data val = this.visit(ctx.parameterCallList().varValue(i));
+                //System.out.println("Added: " + val);
+                // peek() gets us the top element, i.e. current scope
+                localVars.peek().put(varName, val);
+            }
+            else{
+                for (int k = 0; k < vNames.length; k++){
+                    //System.out.println("Vnames: " + vNames[k]);
+                    Data val = this.visit(ctx.parameterCallList().varValue(i+k));
+                    //System.out.println("Added2: " + val);
+                    // peek() gets us the top element, i.e. current scope
+                    localVars.peek().put(vNames[k], val);
+                    //System.out.println("Table: " + localVars.peek());
+
+                }
+            }
+        }
+
+        this.visitChildren(function);
+        Data returnVal = localVars.peek().get(functionName);
+        //System.out.println("Return: " + returnVal);
+
+        // Move back down
+        localVars.pop();
+
+        return returnVal;
     }
 
     /*************** Utility methods ***************/

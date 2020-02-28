@@ -6,6 +6,19 @@ VAR
     k : real = 8;
     z : real = k+cos(0.0/1.0);
 
+function max(num1, num2: real): real;
+VAR
+   result : real;
+
+BEGIN
+   if (num1 > num2) then
+      result := num1;
+
+   else
+      result := num2;
+   max := result;
+END;
+
 BEGIN
     writeln('K is: ', k);
     writeln('J is: ', j);
@@ -24,7 +37,13 @@ BEGIN
     writeln('Looping...');
 
     while (k > 4) do
+    BEGIN
         k := k-1;
         writeln('K is now: ', k);
+    END;
+
+    k := max(z,7);
+
+    writeln('K is now: ', k);
 
 END;
