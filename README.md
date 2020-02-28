@@ -54,4 +54,4 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [x] While loops
 - [ ] For loops
 - [ ] Break/continue in loops
-- [ ] User defined functions
+- [x] User defined functions
