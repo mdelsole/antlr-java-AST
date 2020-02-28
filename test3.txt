@@ -10,7 +10,6 @@ VAR
 BEGIN
 if (num1 > 3) then
     num1 := (num1)/3;
-    writeln(num1);
 
 else
     num1 := 3;
