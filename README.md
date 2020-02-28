@@ -48,9 +48,9 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [ ] Readln
 - [x] Writeln
 - [x] Variable assignment
-- [ ] Static scoping
-- [ ] Global variables vs. local variables
-- [ ] Scope chaining and position tracking
+- [x] Static scoping
+- [x] Global variables vs. local variables
+- [x] Scope chaining and position tracking
 - [x] While loops
 - [ ] For loops
 - [ ] Break/continue in loops
