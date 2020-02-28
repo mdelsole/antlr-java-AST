@@ -45,7 +45,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [x] If-then-else statements
 - [ ] Case statements
 - [x] Special math expressions (sqrt, sin, cos, ln, exp)
-- [ ] Readln
+- [x] Readln
 - [x] Writeln
 - [x] Variable assignment
 - [x] Static scoping
