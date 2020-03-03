@@ -187,6 +187,18 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConditional(pascalParser.ConditionalContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link pascalParser#caseBlock}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCaseBlock(pascalParser.CaseBlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#caseStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCaseStatement(pascalParser.CaseStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link pascalParser#readln}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

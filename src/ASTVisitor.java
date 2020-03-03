@@ -368,9 +368,34 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         return null;
     }
 
-    // TODO: Case
+    @Override
+    public Data visitCaseBlock(pascalParser.CaseBlockContext ctx) {
+        // Whether or not we need to execute the else at the end
+        boolean complete = false;
 
+        Data compareValue = this.visit(ctx.varValue());
 
+        // Loop through the if statement, execute it if the condition evaluates to true
+        for (int i = 0; i < ctx.caseStatement().size(); i++) {
+            Data value = this.visit(ctx.caseStatement(i).varValue());
+            //System.out.println("Value: " + value);
+            //System.out.println("Compare value: " + compareValue);
+            //System.out.println("Eval: " + (value.equals(compareValue)));
+            if (value.equals(compareValue)){
+                this.visit(ctx.caseStatement(i).statement());
+                complete = true;
+                break;
+            }
+            System.out.println();
+        }
+
+        // Execute the else, if nothing else was true
+        if (!complete){
+            this.visit(ctx.statement());
+        }
+
+        return null;
+    }
 
     /*************** Writeln, readln ***************/
 

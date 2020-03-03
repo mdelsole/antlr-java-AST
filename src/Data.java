@@ -22,6 +22,13 @@ public class Data {
         this.data = (Double) this.data + 1;
     }
 
+    public boolean equals (Object obj) {
+        if (data == obj) return true;
+        if (data == null || this.getClass() != obj.getClass()) return false;
+        Data compare = (Data) obj ;
+        return this.data.equals(compare.data);
+    }
+
     @Override
     public String toString() {
         return String.valueOf(data);

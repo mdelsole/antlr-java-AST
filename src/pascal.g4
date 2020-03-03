@@ -46,7 +46,7 @@ varAssignment: varNameList ':=' varValue SMCOLN;
 programBlock: BEGIN statementList END SMCOLN;
 statementList: statement+;
 // TODO: Case
-statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | functionCall | procedureCall
+statement: (programBlock | ifBlock | caseBlock | writeln | readln | whileLoop | forLoop | functionCall | procedureCall
         | varAssignment | breakd | continued);
 
 /***** Basic arithmetic expressions with variables *****/
@@ -86,7 +86,9 @@ ifBlock: IF conditional (ELSE IF conditional)* (ELSE statement)?;
 conditional:
     logicExpr THEN (statement)+;
 
-// TODO: Case
+caseBlock: CASE varValue OF (caseStatement)+ (ELSE statement)? END SMCOLN;
+
+caseStatement: varValue COLON statement;
 
 /***** Special Expressions: Readln, Writeln, sqrt, sin, cos, ln, exp *****/
 
@@ -150,6 +152,9 @@ REALTYPE: 'real';
 BREAKD: 'break';
 CONTINUED: 'continue';
 
+CASE: 'case';
+OF: 'of';
+
 READLN: 'readln';
 WRITELN: 'writeln';
 
@@ -192,8 +197,6 @@ LN : 'ln';
 IF : 'if';
 ELSE : 'else';
 THEN : 'then';
-CASE : 'case';
-OF : 'of';
 
 REAL: [0-9]+('.'[0-9]+)?;
 INT: [0-9]+;

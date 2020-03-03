@@ -17,6 +17,10 @@ Scoping:
         chose not to allow all global variables to be affected, since that implementation would basically be the same
         thing as just putting the code in the main program block, which seemed pointless.
 
+Misc. Assumptions:
+    - As far as we could tell, case statements in pascal only have one line of execution for each case. Multi-line
+    execution was implemented in if statements.
+
 Bonus Implemented:
     - Implement parameter passing in procedures/functions. Procedures should be able to declare parameters that can be
     passed when they are called. These variables should be correctly scoped as well.
