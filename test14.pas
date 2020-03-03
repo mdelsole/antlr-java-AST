@@ -1,0 +1,42 @@
+program mytests;
+VAR
+    i : boolean = true;
+    k : real = 8;
+    x : real = 6;
+    z : real = k+cos(0.0/1.0);
+
+
+function max(num1, num2: real; condit: boolean): real;
+VAR
+   result : real;
+
+BEGIN
+   if (condit) then
+      result := num1;
+
+   else
+      result := num2;
+   max := result;
+END;
+
+procedure divide3(num1: real; condit: boolean);
+VAR
+    result : real;
+
+BEGIN
+if (condit) then
+    num1 := (num1)/3;
+else
+    num1 := 2;
+END;
+
+BEGIN
+
+    k := max(z,7,i);
+    writeln('K is now: ', k);
+    divide3(k, i);
+    writeln('K is now: ', k);
+
+
+
+END;
