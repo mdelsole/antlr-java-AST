@@ -231,6 +231,18 @@ public interface pascalVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitForVar(pascalParser.ForVarContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link pascalParser#breakd}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBreakd(pascalParser.BreakdContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link pascalParser#continued}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContinued(pascalParser.ContinuedContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link pascalParser#functionDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

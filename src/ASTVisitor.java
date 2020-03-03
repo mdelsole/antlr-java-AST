@@ -11,16 +11,20 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
 
     // Our "scope"; each level of the stack will store the local variables for that "scope"
-    Stack<HashMap<String, Data>> localVars = new Stack<HashMap<String, Data>>();
+    Stack<HashMap<String, Data>> localVars = new Stack<>();
     // Global vars will be the variables at the lowest scope level
-    HashMap<String, Data> globalVars = new HashMap<String, Data>();
+    HashMap<String, Data> globalVars = new HashMap<>();
 
     // Keep a map of all the user-defined functions
     HashMap<String, pascalParser.FunctionDeclarationContext> functions = new HashMap<>();
     // Keep a map of all the user-defined procedures
     HashMap<String, pascalParser.ProcedureDeclarationContext> procedures = new HashMap<>();
+    // Storing variables names
     List<String> procedureVars = new ArrayList<>();
 
+    // Break/continue. Excuse the stupid names, but both are reserved words, so something must be done...
+    boolean break_or_nah = false;
+    boolean continue_or_nah = false;
 
 
     /*************** Implementing the abstract methods of pascalBaseVisitor ***************/
@@ -432,10 +436,25 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
         Boolean condition = this.visit(ctx.logicExpr()).toBoolean();
         while (condition){
-            this.visit(ctx.programBlock());
-            // Re-evaluate the condition to determine if we continue
-            condition = this.visit(ctx.logicExpr()).toBoolean();
+            if (!break_or_nah) {
+                if (!continue_or_nah) {
+                    this.visit(ctx.programBlock());
+                    // Re-evaluate the condition to determine if we continue
+                    condition = this.visit(ctx.logicExpr()).toBoolean();
+                }
+                else{
+                    // Re-evaluate the condition to determine if we continue
+                    condition = this.visit(ctx.logicExpr()).toBoolean();
+                }
+            }
+            else{
+                break;
+            }
         }
+
+        // Reset break/continue
+        break_or_nah = false;
+        continue_or_nah = false;
 
         // Once we're done with our loop, return to the original scope
         localVars.pop();
@@ -457,9 +476,23 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         Double cond = this.visit(ctx.mathExpr()).toDouble();
 
         for(double i = tempVar.toDouble(); i <= cond; i++){
-            this.visit(ctx.programBlock());
-            tempVar.add1();
+            if (!break_or_nah) {
+                if (!continue_or_nah) {
+                    this.visit(ctx.programBlock());
+                    tempVar.add1();
+                }
+                else{
+                    tempVar.add1();
+                }
+            }
+            else{
+                break;
+            }
         }
+
+        // Reset break/continue
+        break_or_nah = false;
+        continue_or_nah = false;
 
         // Once we're done with our loop, return to the original scope
         localVars.pop();
@@ -469,13 +502,23 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
     @Override
     public Data visitForVar(pascalParser.ForVarContext ctx) {
-        System.out.println("Here");
-
         String id = ctx.NAME().getText();
         Data value = this.visit(ctx.mathExpr());
 
         localVars.peek().put(id, value);
         return value;
+    }
+
+    @Override
+    public Data visitBreakd(pascalParser.BreakdContext ctx) {
+        break_or_nah = true;
+        return null;
+    }
+
+    @Override
+    public Data visitContinued(pascalParser.ContinuedContext ctx) {
+        continue_or_nah = true;
+        return null;
     }
 
     /*************** User-defined functions ***************/

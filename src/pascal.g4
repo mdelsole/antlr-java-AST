@@ -46,7 +46,8 @@ varAssignment: varNameList ':=' varValue SMCOLN;
 programBlock: BEGIN statementList END SMCOLN;
 statementList: statement+;
 // TODO: Case
-statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | functionCall | procedureCall | varAssignment);
+statement: (programBlock | ifBlock | writeln | readln | whileLoop | forLoop | functionCall | procedureCall
+        | varAssignment | breakd | continued);
 
 /***** Basic arithmetic expressions with variables *****/
 
@@ -110,6 +111,10 @@ forLoop: FOR forVar TO mathExpr DO programBlock;
 // For temporary for loop iteration variable
 forVar: NAME ':=' mathExpr;
 
+breakd: BREAKD SMCOLN;
+
+continued: CONTINUED SMCOLN;
+
 /***** User-defined functions *****/
 
 
@@ -143,6 +148,8 @@ BEGIN: 'BEGIN';
 END: 'END';
 BOOLEANTYPE: 'boolean';
 REALTYPE: 'real';
+BREAKD: 'break';
+CONTINUED: 'continue';
 
 READLN: 'readln';
 WRITELN: 'writeln';
