@@ -616,7 +616,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
         this.visitChildren(function);
         Data returnVal = localVars.peek().get(functionName);
-        System.out.println("Return: " + returnVal);
+        //System.out.println("Return: " + returnVal);
 
         // Move back down to lower scope
         localVars.pop();
