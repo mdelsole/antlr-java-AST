@@ -6,10 +6,9 @@ VAR
     m : real = 8;
     v : real = r*c/(d+m);
 BEGIN
-    writeln(FRED);
+    writeln('FRED');
 END;
 
 (*OUTPUT
 FRED
-Previous variable was not found in map.
 *)
