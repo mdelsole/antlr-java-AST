@@ -225,7 +225,6 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     @Override
     public Data visitArithVarElement(pascalParser.ArithVarElementContext ctx) {
         String varName = ctx.getText();
-        procedureVars.add(varName);
         // Retrieve the value using the variable name as the key
         Data value = localVars.peek().get(varName);
         //System.out.println("Retrieved value: " + value);
@@ -386,7 +385,6 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
                 complete = true;
                 break;
             }
-            System.out.println();
         }
 
         // Execute the else, if nothing else was true
@@ -630,6 +628,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
     @Override
     public Data visitProcedureDeclaration(pascalParser.ProcedureDeclarationContext ctx) {
         String procedureName = ctx.NAME().getText();
+
         // Put the function and its context in our store of functions
         procedures.put(procedureName, ctx);
         return null;
@@ -643,6 +642,31 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         // Make sure the new scope has access to the global variables too by using putAll()
         newScope.putAll(localVars.peek());
         localVars.push(newScope);
+
+        // Get the names of the variables that will be updated at the end of the procedure
+        List<String> procNames = new ArrayList<>();
+        String [] pNames;
+        String pName = "";
+        for (int i = 0 ; i < ctx.parameterCallList().varValue().size(); i++) {
+            pName = ctx.parameterCallList().varValue(i).getText();
+            procNames.add(pName);
+        }
+        //System.out.println("Varnames: " + varNames);
+        for (int i = 0; i < procNames.size(); i++) {
+            if (procNames.get(i).contains(",")) {
+                pNames = parseString(procNames.get(i));
+                for (int j = 0; j < pNames.length; j++){
+                    procedureVars.add(pNames[j]);
+                }
+            } else {
+                procedureVars.add(procNames.get(i));
+            }
+        }
+        //System.out.println("ProcedureVars: " + procedureVars);
+
+        // Get the names of variables we have manipulated here
+        List<String> usedVars = new ArrayList<>();
+
 
         // Get the context of the function
         pascalParser.ProcedureDeclarationContext procedure = procedures.get(ctx.NAME().getText());
@@ -669,6 +693,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
                 // peek() gets us the top element, i.e. current scope
                 localVars.peek().put(varName, val);
+                usedVars.add(varName);
                 position += 1;
 
             }
@@ -679,6 +704,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
                     //System.out.println("Added2: " + val);
                     // peek() gets us the top element, i.e. current scope
                     localVars.peek().put(vNames[k], val);
+                    usedVars.add(vNames[k]);
                     //System.out.println("Table: " + localVars.peek());
                     position +=1;
 
@@ -686,31 +712,25 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
             }
         }
 
-
         this.visitChildren(procedure);
-        //System.out.println("Return: " + returnVal);
 
         // Move back down and transfer over any variables as necessary
         HashMap<String, Data> current = localVars.pop();
         HashMap<String, Data> parent = localVars.peek();
+        
+        //System.out.println(Arrays.asList(current));
+        //System.out.println(Arrays.asList(procedureVars));
+        //System.out.println(usedVars);
 
-
-        // Strip away redundant variables
-        HashMap<String, Data> newCurrent = new HashMap<>(current);
-        for(Map.Entry<String, Data> entry : current.entrySet()) {
-            if (entry.getKey().equals("result")) {
-                newCurrent.remove(entry.getKey());
+        // Go through and figure out which global variables to update
+        for (int i = 0; i < procedureVars.size(); i++){
+            if (parent.containsKey(procedureVars.get(i))){
+                Data value = current.get(usedVars.get(i));
+                parent.put(procedureVars.get(i), value);
             }
         }
 
-        int varsPosition = 0;
-        for(Map.Entry<String, Data> entry : newCurrent.entrySet()) {
-            if(!parent.containsKey(entry.getKey())){
-                Data value = newCurrent.get(entry.getKey());
-                parent.put(procedureVars.get(varsPosition), value);
-                varsPosition += 1;
-            }
-        }
+        procedureVars.clear();
 
         return null;
     }
