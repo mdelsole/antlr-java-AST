@@ -38,17 +38,17 @@ By accessing the elements of our current *context*, we can perform actions on th
   all options to demonstrate functionality, although they might not match pascal exactly. Our implementation is as
   follows:
 
- -For/while loops: A new scope is created for these loops. Variables declared within loops are not transferred
+ - For/while loops: A new scope is created for these loops. Variables declared within loops are not transferred
   back to the parent scope. Parent scope variables are able to be affected by operations within the loop.
 
-        -User-defined functions: A new scope is created for within functions. In functions, parent scope variables can
-        NOT be affected by operations within the function. We understood functions to simply be about calculating the
-        return value.
+  - User-defined functions: A new scope is created for within functions. In functions, parent scope variables can
+    NOT be affected by operations within the function. We understood functions to simply be about calculating the
+    return value.
 
-        -User-defined procedures: A new scope is created for within procedures. In procedures, parent scope variables
-        CAN be affected by operations within the procedure, but only if that variable was passed in as a parameter. We
-        chose not to allow all global variables to be affected, since that implementation would basically be the same
-        thing as just putting the code in the main program block, which seemed pointless.
+  - User-defined procedures: A new scope is created for within procedures. In procedures, parent scope variables
+    CAN be affected by operations within the procedure, but only if that variable was passed in as a parameter. We
+    chose not to allow all global variables to be affected, since that implementation would basically be the same
+    thing as just putting the code in the main program block, which seemed pointless.
 
 # Misc. Assumptions:
     - As far as we could tell, case statements in pascal only have one line of execution for each case. Multi-line
