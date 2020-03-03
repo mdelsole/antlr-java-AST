@@ -43,7 +43,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [ ] Negative numbers
 - [x] Boolean expressions (with variables)
 - [x] If-then-else statements
-- [ ] Case statements
+- [x] Case statements
 - [x] Special math expressions (sqrt, sin, cos, ln, exp)
 - [x] Readln
 - [x] Writeln
@@ -53,7 +53,7 @@ By accessing the elements of our current *context*, we can perform actions on th
 - [x] Scope chaining and position tracking
 - [x] While loops
 - [x] For loops
-- [ ] Break/continue in loops
+- [x] Break/continue in loops
 - [x] User defined functions
 - [x] User defined procedures
 - [x] Formal parameter passing-in for functions and procedures (Bonus)
