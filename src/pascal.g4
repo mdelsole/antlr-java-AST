@@ -84,7 +84,7 @@ logicElement:
 ifBlock: IF conditional (ELSE IF conditional)* (ELSE statement)?;
 
 conditional:
-    logicExpr THEN statement;
+    logicExpr THEN (statement)+;
 
 // TODO: Case
 
@@ -121,8 +121,7 @@ continued: CONTINUED SMCOLN;
 functionDeclaration: FUNCTION NAME (parameterList)? COLON
                      funcType=(BOOLEANTYPE | REALTYPE) SMCOLN variableBlock programBlock;
 
-procedureDeclaration: PROCEDURE NAME (parameterList)? COLON
-                     procType=(BOOLEANTYPE | REALTYPE) SMCOLN variableBlock programBlock;
+procedureDeclaration: PROCEDURE NAME (parameterList)? SMCOLN variableBlock programBlock;
 
 parameterList: '('parameterSet (SMCOLN parameterSet)*')';
 

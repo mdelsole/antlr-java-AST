@@ -7,7 +7,7 @@ public class Main {
     public static void main(String [] args) throws Exception{
 
         if (args.length == 0) {
-            args = new String[]{"test3.txt"};
+            args = new String[]{"test5.txt"};
         }
 
         System.out.println("parsing: " + args[0]);
