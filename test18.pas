@@ -19,7 +19,9 @@ BEGIN
         END;
         result := 6;
     else
-        result := num2
+        result := num2;
+    writeln('Yo');
+
     caser := result;
 END;
 

@@ -616,9 +616,9 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
         this.visitChildren(function);
         Data returnVal = localVars.peek().get(functionName);
-        //System.out.println("Return: " + returnVal);
+        System.out.println("Return: " + returnVal);
 
-        // Move back down
+        // Move back down to lower scope
         localVars.pop();
 
         return returnVal;
@@ -633,7 +633,6 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         procedures.put(procedureName, ctx);
         return null;
     }
-
 
     @Override
     public Data visitProcedureCall(pascalParser.ProcedureCallContext ctx) {
@@ -666,7 +665,6 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
 
         // Get the names of variables we have manipulated here
         List<String> usedVars = new ArrayList<>();
-
 
         // Get the context of the function
         pascalParser.ProcedureDeclarationContext procedure = procedures.get(ctx.NAME().getText());
@@ -717,7 +715,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         // Move back down and transfer over any variables as necessary
         HashMap<String, Data> current = localVars.pop();
         HashMap<String, Data> parent = localVars.peek();
-        
+
         //System.out.println(Arrays.asList(current));
         //System.out.println(Arrays.asList(procedureVars));
         //System.out.println(usedVars);

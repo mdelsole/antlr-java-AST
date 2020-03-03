@@ -21,7 +21,7 @@ BEGIN
                 writeln(x);
         END;
     else
-        result := num2
+        result := num2;
     forr := result;
 END;
 
