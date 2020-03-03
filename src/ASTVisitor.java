@@ -548,6 +548,7 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
         pascalParser.FunctionDeclarationContext function = functions.get(ctx.NAME().getText());
         // Get the name of the function
         String functionName = ctx.NAME().getText();
+        int position = 0;
 
         for (int i = 0; i < function.parameterList().parameterSet().size(); i++){
             String varName = function.parameterList().parameterSet(i).varNameList().getText();
@@ -560,21 +561,31 @@ public class ASTVisitor extends pascalBaseVisitor<Data>{
                 vNames = null;
             }
 
+
             // Place the variable name and its data value into this scope's variables (i.e. localVars)
             if (vNames == null) {
-                Data val = this.visit(ctx.parameterCallList().varValue(i));
-                //System.out.println("Added: " + val);
+                System.out.println("I-sing: " + position);
+                System.out.println("VarName: " + varName);
+
+
+                Data val = this.visit(ctx.parameterCallList().varValue(position));
+                System.out.println("Added: " + val);
                 // peek() gets us the top element, i.e. current scope
                 localVars.peek().put(varName, val);
+                position += 1;
             }
             else{
+                System.out.println("I-mult: " + i);
+
                 for (int k = 0; k < vNames.length; k++){
                     //System.out.println("Vnames: " + vNames[k]);
-                    Data val = this.visit(ctx.parameterCallList().varValue(i+k));
+                    Data val = this.visit(ctx.parameterCallList().varValue(position));
                     //System.out.println("Added2: " + val);
                     // peek() gets us the top element, i.e. current scope
                     localVars.peek().put(vNames[k], val);
                     //System.out.println("Table: " + localVars.peek());
+                    position +=1;
+                    System.out.println("Position: " + position);
 
                 }
             }

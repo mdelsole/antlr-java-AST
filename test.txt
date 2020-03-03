@@ -6,12 +6,12 @@ VAR
     k : real = 8;
     z : real = k+cos(0.0/1.0);
 
-function max(num1, num2: real): real;
+function max(num1, num2: real; condit: boolean): real;
 VAR
    result : real;
 
 BEGIN
-   if (num1 > num2) then
+   if (condit) then
       result := num1;
 
    else
